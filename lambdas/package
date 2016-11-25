@@ -1,0 +1,4 @@
+#!/bin/bash
+
+zip -r crawler.zip crawler.js keys.json node_modules
+zip -r monitor.zip monitor.js keys.json node_modules
