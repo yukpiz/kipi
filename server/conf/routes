@@ -4,7 +4,8 @@
 
 module:testrunner
 
-GET     /                                       App.Index
+GET     /                                       ManagerMonitor.Index
+POST    /manager_monitor/save                   ManagerMonitor.Save
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

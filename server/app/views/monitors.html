@@ -1,0 +1,21 @@
+<table>
+  <tr>
+    <th>Account Name</th>
+    <th>Account Type</th>
+    <th>Monitoring Word</th>
+    <th>Activate</th>
+  </tr>
+
+  {{range .monitors}}
+    <tr>
+      <td>{{.AccountName}}</td>
+      <td>{{.AccountType}}</td>
+      <td>{{.Word}}</td>
+      <td><input type="checkbox" checked={{.Active}}/></td>
+      <td m="{{.Id.Hex}}">
+        <button>upd</button>
+        <button>del</button>
+      </td>
+    </tr>
+  {{end}}
+</table>
