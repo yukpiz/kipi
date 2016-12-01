@@ -7,6 +7,9 @@ module:testrunner
 GET     /                                       ManagerMonitor.Index
 POST    /manager_monitor/save                   ManagerMonitor.Save
 
+# APIs
+GET     /api/monitor/get                        Monitor.Get
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

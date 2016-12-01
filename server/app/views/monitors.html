@@ -1,26 +1,2 @@
-
-
-<table>
-  <tr>
-    <th>Account Name</th>
-    <th>Account Type</th>
-    <th>Monitoring Word</th>
-    <th>Activate</th>
-    <td>
-      <button id="add-btn">add</button>
-    </td>
-  </tr>
-
-  {{range .monitors}}
-    <tr>
-      <td id="data-accname">{{.AccountName}}</td>
-      <td id="data-acctype">{{.AccountType}}</td>
-      <td id="data-word">{{.Word}}</td>
-      <td><input id="data-actv" type="checkbox" checked={{.Active}}/></td>
-      <td m="{{.Id.Hex}}">
-        <button id="upd-btn">upd</button>
-        <button id="del-btn">del</button>
-      </td>
-    </tr>
-  {{end}}
-</table>
+<script src="/public/js/manage_monitor.js" type="text/javascript" charset="utf-8"></script>
+<div id="content"></div>
