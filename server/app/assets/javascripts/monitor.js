@@ -1,17 +1,31 @@
-const MonitorTable = props => {
-	return <table>
-		<thead>
+const MonitorTable = React.createClass({
+	render() {
+		return <table id="table">
+			<thead>
+				<tr>
+					<th>Account Name</th>
+					<th>Account Type</th>
+					<th>Monitor Word</th>
+					<th>Active</th>
+					<th><button onClick={this.newRowClick}>Add</button></th>
+				</tr>
+			</thead>
+			{this.props.monitors.map((monitor, i) => <MonitorRow key={i} monitor={monitor}/>)}
+		</table>;
+	},
+
+	newRowClick(e) {
+		return <tbody>
 			<tr>
-				<th>Account Name</th>
-				<th>Account Type</th>
-				<th>Monitor Word</th>
-				<th>Active</th>
-				<th><button>Add</button></th>
+				<td><input type="text"/></td>
+				<td><input type="text"/></td>
+				<td><input type="text"/></td>
+				<td><input type="checkbox" defaultChecked="true"/></td>
+				<td></td>
 			</tr>
-		</thead>
-		{props.monitors.map((monitor, i) => <MonitorRow key={i} monitor={monitor}/>)}
-	</table>;
-};
+		</tbody>;
+	},
+});
 
 const MonitorRow = props => {
 	const monitor = props.monitor;
@@ -21,6 +35,18 @@ const MonitorRow = props => {
 			<td>{monitor.AccountType}</td>
 			<td>{monitor.Word}</td>
 			<td><input type="checkbox" defaultChecked={monitor.Active}/></td>
+		</tr>
+	</tbody>;
+};
+
+const NewRow = props => {
+	return <tbody>
+		<tr>
+			<td><input type="text"/></td>
+			<td><input type="text"/></td>
+			<td><input type="text"/></td>
+			<td><input type="checkbox" defaultChecked="true"/></td>
+			<td></td>
 		</tr>
 	</tbody>;
 };
