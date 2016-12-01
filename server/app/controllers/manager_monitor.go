@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/revel/revel"
 	"github.com/yukpiz/kipi/server/app/libs/mongo"
 	"github.com/yukpiz/kipi/server/app/models"
 	"gopkg.in/mgo.v2/bson"
+	"io/ioutil"
 )
 
 type ManagerMonitor struct {
@@ -19,17 +21,16 @@ func (c ManagerMonitor) Index() revel.Result {
 	if err != nil {
 		panic(err)
 	}
-	//for Dbg
-	if len(monitors) == 0 {
-		err = collection.Insert(&models.Monitor{Id: bson.NewObjectId(), Word: "testtest1", AccountName: "yuckmb", AccountType: "twitter", Active: true})
-		err = collection.Insert(&models.Monitor{Id: bson.NewObjectId(), Word: "testtest2", AccountName: "yuckmb", AccountType: "twitter", Active: true})
-		err = collection.Insert(&models.Monitor{Id: bson.NewObjectId(), Word: "testtest3", AccountName: "yuckmb", AccountType: "twitter", Active: true})
-	}
 
 	fmt.Printf("%+v\n", monitors)
 	return c.Render(monitors)
 }
 
 func (c ManagerMonitor) Save() revel.Result {
+	data := make(map[string]interface{})
+	body, _ := ioutil.ReadAll(c.Request.Body)
+
+	var params interface{}
+	json.Unmarshal(body, &params)
 	return c.Render()
 }
