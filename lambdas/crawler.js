@@ -13,9 +13,10 @@ exports.handler = (event, context) => {
 		function(callback) {
 			console.log('===> ASYNC: HTTP REQUEST FUNCTION');
 			console.log(url);
-			request(url, (err, res, body) => {
+			request.get(url, {timeout: 20000}, (err, res, body) => {
 				if (err || res.statusCode != 200) {
-					console.log('ERROR: ' + res.statusCode);
+					console.log(err);
+					//console.log('ERROR: ' + res.statusCode);
 					return;
 				}
 				callback(null, body);
@@ -74,18 +75,21 @@ exports.handler = (event, context) => {
 		},
 		function(docs, callback) {
 			console.log('===> ASYNC: HTTP REQUEST FUNCTION FOR DETAILS');
+			//TODO: Generate bodies.
 			async.each(docs, function(doc, callback) {
-				console.log(doc.url);
-				request(doc.url, (err, res, body) => {
-					console.log(res.statusCode);
+				console.log(doc.url.S);
+				request.get(doc.url.S, {timeout: 20000}, (err, res, body) => {
 					if (err || res.statusCode != 200) {
-						console.log('ERROR: ' + res.statusCode);
+						console.log(err);
+						//console.log('ERROR: ' + res.statusCode);
 						return;
 					}
 				});
 			});
 			callback(null, null);
 		},
+		//TODO: Parse bodies.
+		//TODO: Insert docs.
 // 		function(body, callback) {
 // 			console.log('test');
 // 			callback(null, 'test');
@@ -121,6 +125,5 @@ exports.handler = (event, context) => {
 		}
 	});
 }
-
 
 exports.handler();
