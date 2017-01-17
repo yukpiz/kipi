@@ -1,7 +1,10 @@
 var async = require('async');
 var request = require('request');
+var cheerio = require('cheerio');
+
 base = 'http://mabinogi.nexon.co.jp';
 url = base + '/community/tradeBoardList.asp?sv=ta';
+
 
 exports.handler = (event, context) => {
 	console.log('====== CALLING LAMBDA FUNCTION: Kipi-Crawler ======');
@@ -9,6 +12,7 @@ exports.handler = (event, context) => {
 	async.waterfall([
 		function(callback) {
 			console.log('===> ASYNC: HTTP REQUEST FUNCTION');
+			console.log(url);
 			request(url, (err, res, body) => {
 				if (err || res.statusCode != 200) {
 					console.log('ERROR: ' + res.statusCode);
@@ -19,7 +23,6 @@ exports.handler = (event, context) => {
 		},
 		function(body, callback) {
 			console.log('===> ASYNC: PARSE HTML BODY');
-			var cheerio = require('cheerio');
 			$ = cheerio.load(body, {decodeEntities: false});
 			var docs = [];
 			$('[class^="list-head"] ~ tr ').each(function() {
@@ -70,28 +73,54 @@ exports.handler = (event, context) => {
 			callback(null, docs);
 		},
 		function(docs, callback) {
-			console.log('===> ASYNC: INSERT OR UPDATE TO DYNAMODB');
-			var AWS = require('aws-sdk');
-			AWS.config.loadFromPath('keys.json');
-			AWS.config.update({region: 'ap-northeast-1'});
-			var dynamodb = new AWS.DynamoDB();
-
-			var errors = [];
+			console.log('===> ASYNC: HTTP REQUEST FUNCTION FOR DETAILS');
 			async.each(docs, function(doc, callback) {
-				params = {
-					TableName: 'mecha_pentagon',
-					Item: doc,
-				};
-				dynamodb.putItem(params, function(err, data) {
-					errors.push(err);
+				console.log(doc.url);
+				request(doc.url, (err, res, body) => {
+					console.log(res.statusCode);
+					if (err || res.statusCode != 200) {
+						console.log('ERROR: ' + res.statusCode);
+						return;
+					}
 				});
 			});
-			callback(errors);
-
+			callback(null, null);
 		},
+// 		function(body, callback) {
+// 			console.log('test');
+// 			callback(null, 'test');
+// 		},
+// 		function(docs, callback) {
+// 			console.log('===> ASYNC: INSERT OR UPDATE TO DYNAMODB');
+// 			var AWS = require('aws-sdk');
+// 			AWS.config.loadFromPath('keys.json');
+// 			AWS.config.update({region: 'ap-northeast-1'});
+// 			var dynamodb = new AWS.DynamoDB();
+//
+// 			var errors = [];
+// 			async.each(docs, function(doc, callback) {
+// 				params = {
+// 					TableName: 'mecha_pentagon',
+// 					Item: doc,
+// 				};
+// 				dynamodb.putItem(params, function(err, data) {
+// 					errors.push(err);
+// 				});
+// 			});
+// 			callback(errors);
+// 		},
 	], function(errors) {
 		console.log('====== FINISHED LAMBDA FUNCTION: Kipi-Crawler ======');
-		console.log(errors);
-		context.done(null, "Success!!");
+		if (!context) return;
+		if (errors) {
+			console.log(errors);
+			console.log("Failed to lambda function.");
+			context.done(null, "ERROR");
+		} else {
+			context.done(null, "SUCCESS");
+		}
 	});
 }
+
+
+exports.handler();
